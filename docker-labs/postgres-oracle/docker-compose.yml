@@ -1,0 +1,19 @@
+services:
+    postgres_cluster1:
+      image: postgres-oracle
+      ports:
+        - 5433:5432
+      secrets:
+        - postgres_password
+  
+    postgres_cluster2:
+      image: postgres-oracle
+      ports:
+        - 5434:5432
+      secrets:
+        - postgres_password
+  
+  secrets:
+    postgres_password:
+      external: true
+  

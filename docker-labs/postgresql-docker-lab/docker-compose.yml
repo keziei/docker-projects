@@ -1,0 +1,45 @@
+volumes:
+  pg1_data:
+  pg2_data:
+
+services:
+  pg1:
+    build: .
+    container_name: pg1
+    environment:
+      POSTGRES_DB: pagila
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./pg1_data:/var/lib/pgsql/data
+      - ./pagila-schema.sql:/docker-entrypoint-initdb.d/1-pagila-schema.sql
+      - ./pagila-data.sql:/docker-entrypoint-initdb.d/2-pagila-data.sql
+    ports:
+      - "5433:5432"
+
+  pg2:
+    build: .
+    container_name: pg2
+    environment:
+      POSTGRES_DB: pagila
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./pg2_data:/var/lib/pgsql/data
+    ports:
+      - "5434:5432"
+    depends_on:
+      - pg1
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: nyhni5-jickyM-kokpuv
+    volumes:
+      - "./pgadmin/pgadmin_servers.json:/pgadmin4/servers.json"
+      - "./pgadmin/pgadmin_pass:/pgadmin4/pass"
+    ports:
+      - "5050:80"
